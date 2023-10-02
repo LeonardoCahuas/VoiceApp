@@ -1,41 +1,46 @@
 import { Resemble } from '@resemble/node';
 import { useState } from 'react';
-import axios from 'axios';
 
 function Recordings() {
     const [res, setRes] = useState("");
 
-    const createRecording = async (event) => {
-        event.preventDefault();
-        const name = 'Prova1';
-        const apiKey = 'ZB2sl0yNUs9NA5rHM2oORAtt';
+    const createRecording = async (e) => {
+        e.preventDefault();
+        Resemble.setApiKey('ZB2sl0yNUs9NA5rHM2oORAtt');
 
-        try {
-            const fileInput = document.getElementById('uploadRecording');
-            console.log(fileInput)
-            const file = fileInput.files[0];
-            // Verifica che il file WAV di consenso esista
-            
-            console.log(apiKey)
-            // Crea una voce su Resemble utilizzando l'endpoint corretto
-            const response = await axios.post('https://app.resemble.ai/api/v2/voices', {
-                name,
-                consent: file,// Se vuoto, puoi ometterlo
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+        // Ottieni il file dall'input file
+        const fileInput = document.getElementById('uploadRecording');
+        console.log(fileInput)
+        const file = fileInput.files[0];
+        console.log(file.type)
 
-            if (response.status === 200) {
-                console.log('Voce creata su Resemble:', response.data);
-            } else {
-                throw new Error('Errore durante la creazione della voce su Resemble.');
-            }
-        } catch (error) {
-            console.error(error);
+        if (!file) {
+            console.error('Nessun file selezionato');
+            return;
         }
+        console.log(file)
+        try {
+            const response = await Resemble.v2.recordings.create("uuisocj", {
+                emotion: 'happy',
+                is_active: true,
+                name: 'happy_sample',
+                text: 'Hey, this is a happy sample!',
+            }, file, file.size);
+
+            // Check if the response has a 'success' property and it's false
+            if (response && response.success === false) {
+                console.error("API Error Message:", response.message);
+                setRes(response.message);
+            } else {
+                console.log("API Response:", response);
+                setRes(response);
+            }
+        } catch (e) {
+            console.error("Error during recording creation:", e.message);
+            setRes("An error occurred during recording creation.");
+        }
+
+
 
 
     }
