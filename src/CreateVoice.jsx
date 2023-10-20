@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 
 function CreateVoice() {
 
-    const creaVoice = async (event) => {
+    /* const creaVoice = async (event) => {
         event.preventDefault();
         console.log(e)
         const name = 'Prova1';
@@ -37,7 +37,43 @@ function CreateVoice() {
         }
 
 
+    } */
+    const creaVoice = async (e) => {
+        e.preventDefault();
+        Resemble.setApiKey('ZB2sl0yNUs9NA5rHM2oORAtt');
+
+       
+
+        try {
+            const response = await Resemble.v2.voices.create("uuisocj"
+            /* , {
+                emotion: 'happy',
+                is_active: true,
+                name: 'happy_sample',
+                text: 'Hey, this is a happy sample!',
+            }, 
+            file, file.size
+             */
+            );
+
+            // Check if the response has a 'success' property and it's false
+            if (response && response.success === false) {
+                console.error("API Error Message:", response.message);
+                setRes(response.message);
+            } else {
+                console.log("API Response:", response);
+                setRes(response);
+            }
+        } catch (e) {
+            console.error("Error during recording creation:", e.message);
+            setRes("An error occurred during recording creation.");
+        }
+
+
+
+
     }
+
     return (
         <section className="container col-6">
             <div className="row">
@@ -45,7 +81,7 @@ function CreateVoice() {
                     <h1 className="mt-4">Crea Nuova Voce</h1>
                     {/* Form per la creazione di nuove voci con sovrapposizione di registrazioni */}
                     <form>
-                        {/* <div className="form-group">
+                        <div className="form-group">
                             <label htmlFor="newVoiceMood">Mood della Voce:</label>
                             <select className="form-control" id="newVoiceMood" name="newVoiceMood">
                                 <option value="happy">Felice</option>
@@ -61,7 +97,7 @@ function CreateVoice() {
                             <label htmlFor="selectVoice">Seleziona Voce:</label>
                             <select className="form-control" id="selectVoice" name="selectVoice">
                             </select>
-                        </div> */}
+                        </div> 
                         <button type="submit" onClick={creaVoice} className="btn btn-primary">Crea Voce</button>
                     </form>
                 </div>

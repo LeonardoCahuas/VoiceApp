@@ -1,0 +1,39 @@
+clonare e addestrare una voce 
+
+gestire le clip inserite 
+
+dividerle per emozione / diversi flow e tonalita
+
+generare contenuto con voci di altri 
+
+creare contenuto partendo dal testo
+
+
+
+VOCE 
+    crea 
+    elimina
+    modifica
+        stile
+            aggiungi stile
+            rimuovi stile
+            metti stile in pausa
+
+
+
+
+
+REGISTRAZIONI
+aggiungi 
+elimina
+gestisci tipo
+togli da addestramento
+
+
+
+CLIP 
+crea 
+modifica
+elimina
+crea da testo
+crea da voce

@@ -8,9 +8,7 @@
 body{
   width: 100vw;
 }
-#sidebar{
-  background-color: rgba(0,33,43,255);
-}
+
 #navbar{
   background-color: rgba(1,56,71,255);
 }
@@ -18,3 +16,18 @@ body{
   background-color: rgba(1,64,82,255);
 }
 
+a:hover{
+  cursor: pointer;
+  color: blanchedalmond;
+}
+.center{
+  height: 120%;
+}
+.linkdash{
+  text-decoration: none;
+  color: white;
+}
+.linkdash:hover{
+  text-decoration: none;
+  color:black;
+}

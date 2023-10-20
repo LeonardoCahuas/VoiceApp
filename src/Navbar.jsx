@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Navbar() {
     return (
         <nav id="navbar" className="navbar navbar-expand-lg navbar-dark p-4 w-100">
@@ -10,7 +12,7 @@ function Navbar() {
                         <a className="nav-link" href="#"><i className="fas fa-user"></i> Cambia Profilo</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#"><i className="fas fa-sign-out-alt"></i> Logout</a>
+                        <Link to="/" className="nav-link" href="#"><i className="fas fa-sign-out-alt"></i> Logout</Link>
                     </li>
                 </ul>
             </div>
