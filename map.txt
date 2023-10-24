@@ -24,11 +24,10 @@ VOCE
 
 
 REGISTRAZIONI
-aggiungi 
-elimina
-gestisci tipo
-togli da addestramento
 
+divisione in voci e divisione in stili per aggiungere recordin intero
+
+divisione in voci per aggiungere recording e suddividerlo in pezzi da assegnare a diversi stili
 
 
 CLIP 
@@ -37,3 +36,17 @@ modifica
 elimina
 crea da testo
 crea da voce
+
+
+
+    
+
+caricamento file
+crea funzioni api
+
+STILI CON ID SALVATI SU DB E NOMI VOCI
+
+
+DB COLLECTION VOCE CON ID VOCE E ID UTENTE
+
+COLLECTION RECORDING CON ID VOCE E ID STILE

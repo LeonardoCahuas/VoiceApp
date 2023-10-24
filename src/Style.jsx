@@ -125,15 +125,15 @@ function Style() {
                             label="Parola"
                             fullWidth
                             margin="dense"
-                            InputProps={{ style: { color: 'white' } }}
-                            InputLabelProps={{ style: { color: 'white' } }}
+                            InputProps={{ style: { color: 'grey' } }}
+                            InputLabelProps={{ style: { color: 'grey' } }}
                         />
                         <TextField
                             label="Pronuncia"
                             fullWidth
                             margin="dense"
-                            InputProps={{ style: { color: 'white' } }}
-                            InputLabelProps={{ style: { color: 'white' } }}
+                            InputProps={{ style: { color: 'grey' } }}
+                            InputLabelProps={{ style: { color: 'grey' } }}
                         />
                     </DialogContent>
                     <DialogActions>

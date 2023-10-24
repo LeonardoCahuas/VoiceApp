@@ -51,7 +51,7 @@ function Home() {
             </Grid>
 
             <Button className='buttondash' variant="contained" color="primary" startIcon={<DashboardIcon />} style={{ marginTop: '40px', backgroundColor: '#8A2BE2', color: '#282c34' }}>
-                <Link to="/dashboard" className='linkdash'>Accedi al Dashboard</Link>
+                <Link to="/authentication" className='linkdash'>Accedi al Dashboard</Link>
             </Button>
         </Box>
     );

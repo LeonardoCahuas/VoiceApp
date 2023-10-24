@@ -9,7 +9,7 @@ function Navbar() {
             <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul className="navbar-nav">
                     <li className="nav-item">
-                        <a className="nav-link" href="#"><i className="fas fa-user"></i> Cambia Profilo</a>
+                        <Link to="/authentication" className="nav-link" href="#"><i className="fas fa-user"></i> Cambia Profilo</Link>
                     </li>
                     <li className="nav-item">
                         <Link to="/" className="nav-link" href="#"><i className="fas fa-sign-out-alt"></i> Logout</Link>

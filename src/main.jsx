@@ -9,6 +9,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Home from './Home'
+import Authentication from './Authentication'
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <App/>,
+  },
+  {
+    path: "/authentication",
+    element: <Authentication/>,
   },
 ]);
 

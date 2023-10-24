@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Button, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, TextField, Collapse,
+  Button, Dialog, DialogTitle, Input, DialogContent, DialogActions, List, ListItem, TextField, Collapse,
   ListItemText, ListItemSecondaryAction, IconButton, Typography, Container, Grid, Divider, InputAdornment, Box
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import axios from 'axios';
 
 function VoiceManagement() {
   const [open, setOpen] = useState(false);
@@ -16,6 +17,34 @@ function VoiceManagement() {
   const [voiceSearch, setVoiceSearch] = useState("");
   const [expandedVoice, setExpandedVoice] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState(null);
+
+  const [voiceName, setVoiceName] = useState("");
+  const [consentFile, setConsentFile] = useState(null);
+
+  async function createVoice() {
+    const API_URL = 'https://app.resemble.ai/api/v2/voices';
+    const API_TOKEN = 'ZB2sl0yNUs9NA5rHM2oORAtt'; // Sostituisci con il tuo token API
+  
+    const formData = new FormData();
+    formData.append('name', voiceName);
+    formData.append('consent', consentFile); // Assicurati che questo sia il file codificato in base64
+  
+    try {
+      const response = await axios.post(API_URL, formData, {
+        headers: {
+          'Authorization': `Bearer ${API_TOKEN}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+  
+      console.log("Voce creata:", response.data);
+      handleClose();
+    } catch (error) {
+      console.error("Errore durante la creazione della voce:", error);
+    }
+  }
+  
+
 
   const handleOpen = () => {
     setOpen(true);
@@ -25,6 +54,17 @@ function VoiceManagement() {
     setOpen(false);
     setSelectedVoice(null);
   };
+
+  const aggiungiVoce = () => {
+    setOpen(false);
+    setSelectedVoice(null);
+
+    //CHIAMATA API CREATE VOICE
+  };
+
+  const eliminaVoce = () => {
+    //CHIAMATA API DELETE VOICE
+  }
 
   const toggleVoiceStyle = (voice) => {
     if (expandedVoice === voice) {
@@ -43,12 +83,12 @@ function VoiceManagement() {
   };
 
   return (
-    <Container style={{ background: '#282c34', color: 'white', padding: '2em', borderRadius: '8px'}}>
+    <Container style={{ background: '#282c34', color: 'white', padding: '2em', borderRadius: '8px' }}>
       <Typography variant="h4" gutterBottom style={{ color: 'white' }}>
         Gestione delle Voci
       </Typography>
 
-      <TextField 
+      <TextField
         variant="filled"
         style={{ marginBottom: '20px', color: 'white', borderColor: 'white' }}
         placeholder="Cerca voce..."
@@ -79,7 +119,7 @@ function VoiceManagement() {
                     <Button startIcon={<EditIcon />} color="primary" onClick={() => handleEditVoice(voice)}>
                       Modifica
                     </Button>
-                    <Button startIcon={<DeleteIcon />} color="secondary">
+                    <Button startIcon={<DeleteIcon />} onClick={eliminaVoce} color="secondary">
                       Elimina
                     </Button>
                   </ListItemSecondaryAction>
@@ -154,13 +194,26 @@ function VoiceManagement() {
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Aggiungi Nuova Voce</DialogTitle>
           <DialogContent>
-            <TextField label="Nome Voce" fullWidth margin="dense" InputProps={{ style: { color: 'white', borderColor: 'white' } }} InputLabelProps={{ style: { color: 'white' } }} />
+            <TextField
+              label="Nome Voce"
+              fullWidth
+              margin="dense"
+              value={voiceName}
+              onChange={(e) => setVoiceName(e.target.value)}
+              InputProps={{ style: { color: 'grey', borderColor: 'grey' } }}
+              InputLabelProps={{ style: { color: 'grey' } }}
+            />
+
+            <Button variant="contained" component="label" style={{ marginTop: '10px' }}>
+              Carica Consenso
+              <Input type="file" hidden onChange={(e) => setConsentFile(e.target.files[0])} />
+            </Button>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">
               Annulla
             </Button>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={createVoice} color="primary">
               Conferma
             </Button>
           </DialogActions>
