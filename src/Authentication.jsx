@@ -6,6 +6,8 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch} from "react-redux";
+import { setUser } from "./redux/userSlice"
 
 
 function Authentication() {
@@ -14,6 +16,7 @@ function Authentication() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');  // Aggiunto per gestire gli errori
     const navigate = useNavigate();
+    const dispatch = useDispatch()
 
 
     const registerUser = async () => {
@@ -30,6 +33,9 @@ function Authentication() {
             const response = await axios.post('http://localhost:5000/login', { name, password });
             console.log(response.data.success)
             if(response.data && response.data.success) { // Verifica che "success" sia true
+                console.log(response.data.userId)
+                const uuid = response.data.userId; // Estrai l'ID dell'utente dalla risposta
+                dispatch(setUser(uuid)) // Puoi stampare l'ID o salvarlo per un uso futuro
                 navigate("/dashboard")// Reindirizza l'utente a /dashboard
             } else {
                 setError(response.data.message || 'Incorrect name or password'); // Usa il messaggio di errore inviato dal server, se disponibile
@@ -38,6 +44,7 @@ function Authentication() {
             setError('Error logging in');
         }
     };
+    
     
 
     return (

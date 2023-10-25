@@ -10,6 +10,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import axios from 'axios';
+import { useSelector } from "react-redux";
+import userReducer from "./redux/userSlice"
 
 function VoiceManagement() {
   const [open, setOpen] = useState(false);
@@ -20,6 +22,8 @@ function VoiceManagement() {
 
   const [voiceName, setVoiceName] = useState("");
   const [consentFile, setConsentFile] = useState(null);
+
+  const userId = useSelector(state => state.user.user)
 
   async function createVoice() {
     const API_URL = 'https://app.resemble.ai/api/v2/voices';
@@ -38,6 +42,11 @@ function VoiceManagement() {
       });
   
       console.log("Voce creata:", response.data);
+
+      const responseBack = await axios.post('http://localhost:5000/voices', {
+            uuid: response.data.item.uuid,
+            userId: userId
+        });
       handleClose();
     } catch (error) {
       console.error("Errore durante la creazione della voce:", error);
