@@ -12,6 +12,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import axios from 'axios';
 import { useSelector } from "react-redux";
 import userReducer from "./redux/userSlice"
+import { useEffect } from 'react';
 
 function VoiceManagement() {
   const [open, setOpen] = useState(false);
@@ -19,20 +20,35 @@ function VoiceManagement() {
   const [voiceSearch, setVoiceSearch] = useState("");
   const [expandedVoice, setExpandedVoice] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState(null);
-
+  const [voices, setVoices] = useState([])
   const [voiceName, setVoiceName] = useState("");
   const [consentFile, setConsentFile] = useState(null);
 
   const userId = useSelector(state => state.user.user)
 
+
+  useEffect(() => {
+    const fetchVoices = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/users/${userId}/voices`);
+        setVoices(response.data); // Assumendo che la risposta sia un array di voci
+      } catch (error) {
+        console.error('Errore durante il recupero delle voci:', error);
+      }
+    };
+    fetchVoices();
+
+
+  }, [])
+
   async function createVoice() {
     const API_URL = 'https://app.resemble.ai/api/v2/voices';
     const API_TOKEN = 'ZB2sl0yNUs9NA5rHM2oORAtt'; // Sostituisci con il tuo token API
-  
+
     const formData = new FormData();
     formData.append('name', voiceName);
     formData.append('consent', consentFile); // Assicurati che questo sia il file codificato in base64
-  
+
     try {
       const response = await axios.post(API_URL, formData, {
         headers: {
@@ -40,19 +56,19 @@ function VoiceManagement() {
           'Content-Type': 'multipart/form-data'
         }
       });
-  
+
       console.log("Voce creata:", response.data);
 
       const responseBack = await axios.post('http://localhost:5000/voices', {
-            uuid: response.data.item.uuid,
-            userId: userId
-        });
+        uuid: response.data.item.uuid,
+        userId: userId
+      });
       handleClose();
     } catch (error) {
       console.error("Errore durante la creazione della voce:", error);
     }
   }
-  
+
 
 
   const handleOpen = () => {
@@ -232,4 +248,4 @@ function VoiceManagement() {
   );
 }
 
-export default VoiceManagement;
+export default VoiceManagement

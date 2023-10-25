@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { setPage } from "./redux/pageSlice";
 
 function SideBar() {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const dispatch = useDispatch();
 
     const changePage = (pageName) => {
@@ -12,7 +12,7 @@ function SideBar() {
 
     return (
         <div className="sidebar" style={{ 
-            flex: isOpen ? '0 0 250px' : '0 0 75px', 
+            flex: isOpen ? '0 0 250px' : '0 0 100px', 
             backgroundColor: '#2c3e50', 
             color: '#ecf0f1', 
             transition: 'flex 0.3s',
