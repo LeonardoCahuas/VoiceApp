@@ -87,9 +87,33 @@ function VoiceManagement() {
     //CHIAMATA API CREATE VOICE
   };
 
-  const eliminaVoce = () => {
-    //CHIAMATA API DELETE VOICE
-  }
+  async function eliminaVoce() {
+    console.log("eiooo")
+    const API_URL = `https://app.resemble.ai/api/v2/voices/uuidu`;
+    const API_TOKEN = 'ZB2sl0yNUs9NA5rHM2oORAtt'; // Assicurati di sostituire con il tuo token API effettivo
+
+    try {
+        const response = await axios.delete(API_URL, {
+            headers: {
+                'Authorization': `Bearer ${API_TOKEN}`
+            }
+        });
+
+        if (response.data.success) {
+            console.log(`Voice with UUID  deleted successfully from Resemble.ai.`);
+            
+            // Qui puoi anche aggiungere codice per eliminare la voce dal tuo backend locale se necessario.
+            // Ad esempio, se hai un endpoint DELETE sul tuo backend locale:
+            // await axios.delete(`http://localhost:5000/voices/${voiceUuid}`);
+            
+        } else {
+            console.error('Failed to delete voice from Resemble.ai.');
+        }
+    } catch (error) {
+        console.error(`Error deleting voice with UUID `, error);
+    }
+}
+
 
   const toggleVoiceStyle = (voice) => {
     if (expandedVoice === voice) {
@@ -186,7 +210,7 @@ function VoiceManagement() {
             <Typography variant="h5" gutterBottom style={{ color: 'white' }}>
               Modifica Voce {selectedVoice}
             </Typography>
-            <TextField label="Nome Voce" fullWidth margin="dense" defaultValue={selectedVoice} style={{ color: 'white', borderColor: 'white' }} InputProps={{ style: { color: 'white', borderColor: 'white' } }} />
+            <TextField label="Nome Voce" fullWidth margin="dense" defaultValue={selectedVoice} style={{ color: 'white', borderColor: 'white' }} InputProps={{ style: { color: 'white', borderColor: 'grey' } }} InputLabelProps={{ style: { color: 'grey' } }} />
             <Box display="flex" justifyContent="space-between" mt={2}>
               <Button variant="contained" color="primary">
                 Salva Modifiche
