@@ -83,7 +83,7 @@ function Clips() {
                                 </ListItemIcon>
                                 <ListItemIcon>
                                     <IconButton edge="end" color="primary" onClick={() => setSelectedVoice(voice)}>
-                                        <ExpandMore />
+                                        <ExpandMore/>
                                     </IconButton>
                                 </ListItemIcon>
                             </ListItem>

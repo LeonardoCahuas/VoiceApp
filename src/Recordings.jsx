@@ -174,7 +174,7 @@ function Recordings() {
                                                     </ListItem>
                                                 ))}
                                             </List>
-                                            <Button variant="contained" color="primary" onClick={() => setOpen(true)} style={{ marginTop: '10px' }}>
+                                            <Button variant="contained" color="primary" onClick={() => setOpen(true)} style={{ marginTop: '10px' , marginBottom: "80px"}}>
                                                 Aggiungi Recording
                                             </Button>
                                         </div>

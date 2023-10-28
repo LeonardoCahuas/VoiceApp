@@ -6,8 +6,9 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "./redux/userSlice"
+import { setToken } from './redux/tokenSlice';
 
 
 function Authentication() {
@@ -32,10 +33,17 @@ function Authentication() {
         try {
             const response = await axios.post('http://localhost:5000/login', { name, password });
             console.log(response.data.success)
-            if(response.data && response.data.success) { // Verifica che "success" sia true
+            console.log(name)
+            console.log(password)
+            if (response.data && response.data.success) { // Verifica che "success" sia true
                 console.log(response.data.userId)
                 const uuid = response.data.userId; // Estrai l'ID dell'utente dalla risposta
-                dispatch(setUser(uuid)) // Puoi stampare l'ID o salvarlo per un uso futuro
+                dispatch(setUser(uuid))
+                const token = response.data.token; // Estrai il token dalla risposta
+                console.log(token);  // Stampa il token nel console
+                dispatch(setToken(token))
+                /* const token1 = useSelector(state => state.token.token); 
+                console.log(token1) */
                 navigate("/dashboard")// Reindirizza l'utente a /dashboard
             } else {
                 setError(response.data.message || 'Incorrect name or password'); // Usa il messaggio di errore inviato dal server, se disponibile
@@ -44,8 +52,8 @@ function Authentication() {
             setError('Error logging in');
         }
     };
-    
-    
+
+
 
     return (
         <Container style={{
@@ -83,7 +91,7 @@ function Authentication() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button variant="contained" color="primary" fullWidth style={{ marginBottom: '20px' }}
-                        onClick={isLogin ? loginUser : registerUser}>
+                    onClick={isLogin ? loginUser : registerUser}>
                     {isLogin ? "Accedi" : "Registrati"}
                 </Button>
                 {/* Mostro l'errore se presente */}

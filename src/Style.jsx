@@ -48,7 +48,7 @@ function Style() {
                                 <ListItem button onClick={() => handleToggleVoice(voice)}>
                                     <ListItemText primary={voice} />
                                     <ListItemIcon>
-                                        {expandedVoice === voice ? <ExpandLess /> : <ExpandMore />}
+                                        {expandedVoice === voice ? <ExpandLess  color="primary"/> : <ExpandMore  color="primary"/>}
                                     </ListItemIcon>
                                     <ListItemSecondaryAction>
                                         <IconButton color="primary" onClick={() => setOpenStyleDialog(true)}>

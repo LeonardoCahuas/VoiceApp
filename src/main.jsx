@@ -1,3 +1,4 @@
+// Il tuo file principale
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
@@ -10,6 +11,7 @@ import {
 } from "react-router-dom";
 import Home from './Home'
 import Authentication from './Authentication'
+import ProtectedRoute from './ProtectedRoute'  // Importa ProtectedRoute
 
 const router = createBrowserRouter([
   {
@@ -18,7 +20,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <App/>,
+    element: (
+      <ProtectedRoute>  
+        <App/>
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/authentication",
@@ -30,4 +36,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <RouterProvider router={router} />
   </Provider>,
-)
+);

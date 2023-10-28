@@ -24,7 +24,7 @@ function VoiceManagement() {
   const [voiceName, setVoiceName] = useState("");
   const [consentFile, setConsentFile] = useState(null);
 
-  const userId = useSelector(state => state.user.user)
+  const userId = useSelector(state => state.user.value)
 
 
   useEffect(() => {

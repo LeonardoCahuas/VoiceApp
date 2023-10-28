@@ -4,16 +4,27 @@
   width: 100vw;
   height: 100vh;
   color: rgb(161, 161, 161);
+  overflow-x: hidden;
 }
 body{
   width: 100vw;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
 }
 
 #navbar{
   background-color: rgba(1,56,71,255);
+  position: fixed;
+  top:0;
+  z-index: 1;
+  margin-left: -100px;
 }
 #center-preve{
   background-color: rgba(1,64,82,255);
+  padding-left: 120px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  height: 93vh;
 }
 
 a:hover{
@@ -21,7 +32,8 @@ a:hover{
   color: blanchedalmond;
 }
 .center{
-  height: 140%;
+  margin-top:  80px;
+  margin-left: 110px;
 }
 .linkdash{
   text-decoration: none;
@@ -30,4 +42,7 @@ a:hover{
 .linkdash:hover{
   text-decoration: none;
   color:black;
+}
+#sidebartitle{
+  gap: 30px
 }
