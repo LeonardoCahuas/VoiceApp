@@ -21,10 +21,7 @@ body{
 }
 #center-preve{
   background-color: rgba(1,64,82,255);
-  padding-left: 120px;
-  padding-top: 50px;
-  padding-bottom: 50px;
-  height: 93vh;
+  
 }
 
 a:hover{
@@ -45,4 +42,24 @@ a:hover{
 }
 #sidebartitle{
   gap: 30px
+}
+
+/* Stili CSS per dispositivi con larghezza maggiore di 768px */
+@media (min-width: 768px) {
+  #center-preve {
+    height: fit-content; /* Per desktop, puoi tentare di usare 100vh */
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+}
+
+/* Stili CSS per dispositivi mobili */
+@media (max-width: 767px) {
+  #center-preve {
+    height: fit-content; /* Sostituisci 50px con l'altezza della tua navbar se presente */
+  }
+
+  .d-flex {
+    flex-shrink: 0; /* Impedisce ai figli flex di ridursi oltre il loro contenuto minimo */
+  }
 }

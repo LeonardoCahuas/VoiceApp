@@ -1,275 +1,270 @@
 import React, { useState } from 'react';
-import {
-  Button, Dialog, DialogTitle, Input, DialogContent, DialogActions, List, ListItem, TextField, Collapse,
-  ListItemText, ListItemSecondaryAction, IconButton, Typography, Container, Grid, Divider, InputAdornment, Box
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { makeStyles } from '@mui/styles';
+import { Container, Grid, FormControl, InputLabel, OutlinedInput, InputAdornment, Card,CardContent,IconButton, Slider, Button, Typography } from '@mui/material';
+import axios from 'axios'
+import { CloudUpload, CloudDownload, SettingsInputComponent, VolumeUp, GraphicEq, Hearing, Tune, FilterVintage } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import SearchIcon from '@mui/icons-material/Search';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import axios from 'axios';
-import { useSelector } from "react-redux";
-import userReducer from "./redux/userSlice"
-import { useEffect } from 'react';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useSelector } from 'react-redux';
 
 function VoiceManagement() {
-  const [open, setOpen] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState(null);
-  const [voiceSearch, setVoiceSearch] = useState("");
-  const [expandedVoice, setExpandedVoice] = useState(null);
-  const [selectedStyle, setSelectedStyle] = useState(null);
-  const [voices, setVoices] = useState([])
-  const [voiceName, setVoiceName] = useState("");
-  const [consentFile, setConsentFile] = useState(null);
+  const sliderSettings = [
+    {
+      min: 0, max: 48000, step: 1, defaultValue: 22050,
+      label: "Ricampionamento Audio",
+      description: "Controlla la frequenza di campionamento dell'audio finale. Un valore di 0 lascia l'audio invariato. Valori più alti aumentano la frequenza di campionamento per una qualità potenzialmente migliore."
+    },
+    {
+      min: 0, max: 1, step: 0.01, defaultValue: 0.5,
+      label: "Scala Inviluppo Volume",
+      description: "Ajusta come il volume dell'audio segue quello originale. Valori bassi mantengono la dinamica originale, valori alti normalizzano il volume per una riproduzione più uniforme."
+    },
+    {
+      min: 0, max: 0.5, step: 0.01, defaultValue: 0.25,
+      label: "Protezione Consonanti",
+      description: "Protegge le consonanti sorde e i suoni del respiro. Valori più bassi aumentano la protezione, riducendo la possibilità di artefatti audio."
+    },
+    {
+      min: 0, max: 7, step: 1, defaultValue: 3,
+      label: "Filtro Mediano",
+      description: "Applica un filtro che può smussare variazioni rapide nel pitch. Valori maggiori possono ridurre dettagli nel tono della voce."
+    },
+    {
+      min: 0, max: 1, step: 0.01, defaultValue: 0.5,
+      label: "Rapporto Funzionalità",
+      description: "Gestisce l'intensità degli accenti e la chiarezza della pronuncia. Valori eccessivamente alti possono introdurre distorsioni."
+    }
+  ];
 
-  const userId = useSelector(state => state.user.value)
+  const [urlOne, setUrlOne] = useState('');
+  const [urlTwo, setUrlTwo] = useState('');
+  const [numericInput, setNumericInput] = useState(0);
+  const [sliderValues, setSliderValues] = useState(sliderSettings.map(s => s.defaultValue));
+  let index = useSelector(state => state.index.value)
 
 
-  useEffect(() => {
-    const fetchVoices = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/users/${userId}/voices`);
-        setVoices(response.data); // Assumendo che la risposta sia un array di voci
-      } catch (error) {
-        console.error('Errore durante il recupero delle voci:', error);
-      }
+  const handleSliderChange = (index) => (event, newValue) => {
+    let newSliderValues = [...sliderValues];
+    newSliderValues[index] = newValue;
+    setSliderValues(newSliderValues);
+  };
+
+  
+
+  const inputStyle = {
+    color: '#fff',
+    background: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: '4px',
+    padding: '0px',
+    fontSize: '1rem',
+  };
+  
+  const cardStyle = {
+    background: '#333', // Colore di sfondo delle card
+    color: '#fff', // Colore del testo
+    margin: '10px 0', // Spazio sopra e sotto la card
+    borderRadius: '8px', // Angoli arrotondati
+  };
+
+  const handleIncrement = () => {
+    setNumericInput((prev) => Math.min(prev + 1, 12)); // Assicurati di non superare il valore massimo
+  };
+
+  const handleDecrement = () => {
+    setNumericInput((prev) => Math.max(prev - 1, -12)); // Assicurati di non andare sotto il valore minimo
+  };
+
+  const handleSubmit = async () => {
+    const data = {
+      sid: 0, // Valore statico, sostituire con il valore reale
+      source_folder_url: urlOne, // Preso dallo stato del componente
+      destination_folder_url: urlTwo, // Preso dallo stato del componente
+      f0_up_key: numericInput, // Valore statico, sostituire con il valore reale
+      f0_method: "rmvpe", // Valore statico, sostituire con il valore reale
+      file_index: index, // Valore statico, sostituire con il valore reale
+      index_rate: sliderValues[4], // Preso dallo stato del componente se necessario
+      filter_radius: sliderValues[3], // Preso dal primo slider
+      resample_sr: sliderValues[0], // Preso dal secondo slider
+      rms_mix_rate: sliderValues[1], // Preso dal quarto slider
+      protect: sliderValues[2], // Preso dal quinto slider
+      format1: "wav" // Valore statico, sostituire con il valore reale
     };
-    fetchVoices();
+    
 
-
-  }, [])
-
-  async function createVoice() {
-    const API_URL = 'https://app.resemble.ai/api/v2/voices';
-    const API_TOKEN = 'ZB2sl0yNUs9NA5rHM2oORAtt'; // Sostituisci con il tuo token API
-
-    const formData = new FormData();
-    formData.append('name', voiceName);
-    formData.append('consent', consentFile); // Assicurati che questo sia il file codificato in base64
+   console.log(data)
+    // Modifica l'URL e l'endpoint API in base alle tue necessità
+   /*  const API_ENDPOINT = 'http://localhost:7865/vc_multi';
 
     try {
-      const response = await axios.post(API_URL, formData, {
+      const response = await axios.post(API_ENDPOINT, data, {
         headers: {
-          'Authorization': `Bearer ${API_TOKEN}`,
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/json'
+          // Aggiungi qui eventuali altri header necessari, come l'Authorization header
         }
       });
 
-      console.log("Voce creata:", response.data);
-
-      const responseBack = await axios.post('http://localhost:5000/voices', {
-        uuid: response.data.item.uuid,
-        userId: userId
-      });
-      handleClose();
+      console.log('Risposta del server:', response.data);
+      // Gestisci qui la risposta del server
     } catch (error) {
-      console.error("Errore durante la creazione della voce:", error);
-    }
-  }
-
-
-
-  const handleOpen = () => {
-    setOpen(true);
+      console.error('Errore nella richiesta API:', error);
+      // Gestisci qui gli errori della richiesta
+    } */
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedVoice(null);
+  
+
+  const sliderTrackStyle = {
+    color: '#1976d2', // Colore della traccia dello slider
+    height: '8px',
   };
 
-  const aggiungiVoce = () => {
-    setOpen(false);
-    setSelectedVoice(null);
-
-    //CHIAMATA API CREATE VOICE
+  const sliderThumbStyle = {
+    color: '#2196f3', // Colore del pollice dello slider
   };
 
-  async function eliminaVoce() {
-    console.log("eiooo")
-    const API_URL = `https://app.resemble.ai/api/v2/voices/uuidu`;
-    const API_TOKEN = 'ZB2sl0yNUs9NA5rHM2oORAtt'; // Assicurati di sostituire con il tuo token API effettivo
-
-    try {
-        const response = await axios.delete(API_URL, {
-            headers: {
-                'Authorization': `Bearer ${API_TOKEN}`
-            }
-        });
-
-        if (response.data.success) {
-            console.log(`Voice with UUID  deleted successfully from Resemble.ai.`);
-            
-            // Qui puoi anche aggiungere codice per eliminare la voce dal tuo backend locale se necessario.
-            // Ad esempio, se hai un endpoint DELETE sul tuo backend locale:
-            // await axios.delete(`http://localhost:5000/voices/${voiceUuid}`);
-            
-        } else {
-            console.error('Failed to delete voice from Resemble.ai.');
-        }
-    } catch (error) {
-        console.error(`Error deleting voice with UUID `, error);
-    }
-}
+  const useStyles = makeStyles(theme => ({
+    root: {
+      '&:hover $notchedOutline': {
+        borderColor: 'color-desiderato', // Sostituisci con il colore desiderato per l'hover
+      },
+      '&$focused $notchedOutline': {
+        borderColor: 'color-desiderato', // Sostituisci con il colore desiderato per lo stato focused
+        borderWidth: '1px', // Opzionale: cambia lo spessore del bordo se necessario
+      },
+    },
+    focused: {},
+    notchedOutline: {},
+  }));
 
 
-  const toggleVoiceStyle = (voice) => {
-    if (expandedVoice === voice) {
-      setExpandedVoice(null);
-    } else {
-      setExpandedVoice(voice);
-    }
-  };
 
-  const handleEditVoice = (voice) => {
-    setSelectedVoice(voice);
-  };
-
-  const handleEditStyle = (style) => {
-    setSelectedStyle(style);
-  };
 
   return (
-    <Container style={{ background: '#282c34', color: 'white', padding: '2em', borderRadius: '8px' }}>
-      <Typography variant="h4" gutterBottom style={{ color: 'white' }}>
-        Gestione delle Voci
+    <Container maxWidth="md" style={{ background: '#282c34', color: 'white', padding: '2em', borderRadius: '8px' }}>
+      <Typography variant="h4" gutterBottom color="primary" style={{  textAlign: 'center' }}>
+        Genera Clip Vocali
       </Typography>
 
-      <TextField
-        variant="filled"
-        style={{ marginBottom: '20px', color: 'white', borderColor: 'white' }}
-        placeholder="Cerca voce..."
-        fullWidth
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-          style: { color: 'white', borderColor: 'white' }
-        }}
-        value={voiceSearch}
-        onChange={(e) => setVoiceSearch(e.target.value)}
-      />
-
       <Grid container spacing={3}>
-        <Grid item xs={8}>
-          <Typography variant="h6" gutterBottom style={{ color: 'white' }}>
-            Elenco Voci
-          </Typography>
-          <List>
-            {['Voce 1', 'Voce 2', 'Voce 3'].filter(voice => voice.toLowerCase().includes(voiceSearch.toLowerCase())).map((voice, index) => (
-              <div key={index}>
-                <ListItem divider button onClick={() => toggleVoiceStyle(voice)}>
-                  <ListItemText primary={voice} />
-                  <ListItemSecondaryAction style={{ marginRight: '30px' }}>
-                    <Button startIcon={<EditIcon />} color="primary" onClick={() => handleEditVoice(voice)}>
-                      Modifica
-                    </Button>
-                    <Button startIcon={<DeleteIcon />} onClick={eliminaVoce} color="secondary">
-                      Elimina
-                    </Button>
-                  </ListItemSecondaryAction>
-                  {expandedVoice === voice ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={expandedVoice === voice} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {['Felice', 'Triste', 'Neutro'].map((style, sIndex) => (
-                      <ListItem key={sIndex} divider style={{ paddingLeft: '60px', backgroundColor: '#3a3f48' }}>
-                        <ListItemText primary={style} />
-                        <ListItemSecondaryAction style={{ marginRight: '30px' }}>
-                          <IconButton color="primary" onClick={() => handleEditStyle(style)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton color="secondary">
-                            <DeleteIcon />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Collapse>
-              </div>
-            ))}
-          </List>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography variant="h6" gutterBottom style={{ color: 'white' }}>
-            Aggiungi Voce
-          </Typography>
-          <Button variant="contained" color="primary" onClick={handleOpen} style={{ width: '100px', height: '100px' }}>
-            <AddIcon fontSize="large" />
-          </Button>
-        </Grid>
-
-        {selectedVoice && (
-          <Grid item xs={12}>
-            <Divider style={{ margin: '20px 0' }} />
-            <Typography variant="h5" gutterBottom style={{ color: 'white' }}>
-              Modifica Voce {selectedVoice}
-            </Typography>
-            <TextField label="Nome Voce" fullWidth margin="dense" defaultValue={selectedVoice} style={{ color: 'white', borderColor: 'white' }} InputProps={{ style: { color: 'white', borderColor: 'grey' } }} InputLabelProps={{ style: { color: 'grey' } }} />
-            <Box display="flex" justifyContent="space-between" mt={2}>
-              <Button variant="contained" color="primary">
-                Salva Modifiche
-              </Button>
-              <Button variant="contained" color="secondary" onClick={() => setSelectedVoice(null)}>
-                Annulla
-              </Button>
-            </Box>
-          </Grid>
-        )}
-
-        {selectedStyle && (
-          <Grid item xs={12}>
-            <Divider style={{ margin: '20px 0' }} />
-            <Typography variant="h5" gutterBottom style={{ color: 'white' }}>
-              Modifica Stile {selectedStyle}
-            </Typography>
-            <TextField label="Nome Stile" fullWidth margin="dense" defaultValue={selectedStyle} style={{ color: 'white', borderColor: 'white' }} InputProps={{ style: { color: 'white', borderColor: 'white' } }} />
-            <Box display="flex" justifyContent="space-between" mt={2}>
-              <Button variant="contained" color="primary">
-                Salva Modifiche
-              </Button>
-              <Button variant="contained" color="secondary" onClick={() => setSelectedStyle(null)}>
-                Annulla
-              </Button>
-            </Box>
-          </Grid>
-        )}
-
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Aggiungi Nuova Voce</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Nome Voce"
-              fullWidth
-              margin="dense"
-              value={voiceName}
-              onChange={(e) => setVoiceName(e.target.value)}
-              InputProps={{ style: { color: 'grey', borderColor: 'grey' } }}
-              InputLabelProps={{ style: { color: 'grey' } }}
+      <Grid item xs={12}>
+          <FormControl variant="outlined" fullWidth margin="dense" style={{ marginBottom: '10px' }}>
+            <InputLabel htmlFor="url-one" style={{ color: 'grey' }}>URL cartella di origine</InputLabel>
+            <OutlinedInput
+              id="url-one"
+              value={urlOne}
+              onChange={(e) => setUrlOne(e.target.value)}
+              label="URL cartella di origine"
+              style={inputStyle}
+              sx={{
+                // Stili personalizzati qui
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#0275d8', // Sostituisci con il colore desiderato
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'white', // Sostituisci con il colore desiderato
+                },
+              }}
             />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl variant="outlined" fullWidth margin="dense" style={{ marginBottom: '10px' }}>
+            <InputLabel htmlFor="url-two" style={{ color: 'grey' }}>URL cartella di destinazione</InputLabel>
+            <OutlinedInput
+              id="url-two"
+              value={urlTwo}
+              onChange={(e) => setUrlTwo(e.target.value)}
+              label="URL cartella di destinazione"
+              style={inputStyle}
+              sx={{
+                // Stili personalizzati qui
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#0275d8', // Sostituisci con il colore desiderato
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'white', // Sostituisci con il colore desiderato
+                },
+              }}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+        <FormControl variant="outlined" fullWidth margin="dense">
+      <InputLabel htmlFor="numeric-input" style={{ color: 'grey' }}>Numeric Input</InputLabel>
+      <OutlinedInput
+        id="numeric-input"
+        type="text" // Cambiato da 'number' a 'text' per evitare le freccette native
+        value={numericInput}
+        onChange={(e) => setNumericInput(e.target.value)}
+        label="Numeric Input"
+        inputProps={{ min: -12, max: 12 }}
+        style={inputStyle}
+        
+        endAdornment={
+          <div className='d-flex flex-row g-5'>
+          <InputAdornment position="start">
+            <IconButton onClick={handleDecrement} aria-label="decrement value">
+              <RemoveIcon style={{ color: 'grey' }} />
+            </IconButton>
+          </InputAdornment>
+          <InputAdornment position="end">
+            <IconButton onClick={handleIncrement} aria-label="increment value">
+              <AddIcon style={{ color: 'grey' }} />
+            </IconButton>
+          </InputAdornment>
+          </div>
+        }
+        sx={{
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#0275d8', // Colore dell'hover
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'white', // Colore quando è focused
+          },
+        }}
+      />
+    </FormControl>
+        </Grid>
 
-            <Button variant="contained" component="label" style={{ marginTop: '10px' }}>
-              Carica Consenso
-              <Input type="file" hidden onChange={(e) => setConsentFile(e.target.files[0])} />
-            </Button>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="secondary">
-              Annulla
-            </Button>
-            <Button onClick={createVoice} color="primary">
-              Conferma
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {sliderSettings.map((setting, index) => (
+          <Grid item xs={12} key={index}>
+            <Card style={{ background: '#333', color: '#fff', marginBottom: '20px' }}>
+              <CardContent>
+                <Typography gutterBottom>
+                  <IconButton color="primary">
+                    {index === 0 && <GraphicEq />}
+                    {index === 1 && <VolumeUp />}
+                    {index === 2 && <Hearing />}
+                    {index === 3 && <Tune />}
+                    {index === 4 && <FilterVintage />}
+                  </IconButton>
+                  {setting.label}
+                </Typography>
+                <Typography variant="body2" style={{ color: 'grey' }}>
+                  Valore: {sliderValues[index]}
+                </Typography>
+                <Typography variant="body2" style={{ color: 'grey' }}>
+                  {setting.description}
+                </Typography>
+                <Slider
+                  value={sliderValues[index]}
+                  onChange={handleSliderChange(index)}
+                  aria-labelledby={`slider-value-${index}`}
+                  min={setting.min}
+                  max={setting.max}
+                  step={setting.step}
+                  style={{ color: '#1976d2' }}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
+      <Button variant="contained" color="primary" style={{ marginTop: '20px' }} onClick={handleSubmit}>
+        Invia
+      </Button>
     </Container>
   );
 }
 
-export default VoiceManagement
+export default VoiceManagement;

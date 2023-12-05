@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { setUser } from "./redux/userSlice"
 import { setToken } from './redux/tokenSlice';
+import { setIndex } from './redux/indexSlice';
 
 
 function Authentication() {
@@ -20,19 +21,12 @@ function Authentication() {
     const dispatch = useDispatch()
 
 
-    const registerUser = async () => {
-        try {
-            await axios.post('http://localhost:5000/users', { name, password });
-            alert('User registered successfully');
-        } catch (error) {
-            setError('Error registering user');
-        }
-    };
 
     const loginUser = async () => {
         try {
             const response = await axios.post('http://localhost:5000/login', { name, password });
-            console.log(response.data.success)
+            console.log(response.data.index)
+            dispatch(setIndex(response.data.index))
             console.log(name)
             console.log(password)
             if (response.data && response.data.success) { // Verifica che "success" sia true
@@ -91,21 +85,13 @@ function Authentication() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <Button variant="contained" color="primary" fullWidth style={{ marginBottom: '20px' }}
-                    onClick={isLogin ? loginUser : registerUser}>
-                    {isLogin ? "Accedi" : "Registrati"}
+                    onClick={ loginUser}>
+                    { "Accedi" }
                 </Button>
                 {/* Mostro l'errore se presente */}
                 {error && <Typography variant="body2" style={{ color: 'red', textAlign: 'center', marginBottom: '20px' }}>{error}</Typography>}
                 <Divider style={{ marginBottom: '20px' }} />
-                {isLogin ?
-                    <Typography variant="body2" style={{ color: 'white', textAlign: 'center' }}>
-                        Non hai un account? <span onClick={() => setIsLogin(false)} style={{ color: '#9C27B0', cursor: 'pointer' }}>Registrati ora</span>
-                    </Typography>
-                    :
-                    <Typography variant="body2" style={{ color: 'white', textAlign: 'center' }}>
-                        Hai già un account? <span onClick={() => setIsLogin(true)} style={{ color: '#FFC107', cursor: 'pointer' }}>Accedi</span>
-                    </Typography>
-                }
+                
             </div>
         </Container>
     );

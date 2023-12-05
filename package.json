@@ -14,6 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.12",
     "@mui/material": "^5.14.12",
+    "@mui/styles": "^5.14.19",
     "@reduxjs/toolkit": "^1.9.6",
     "@resemble/node": "^2.0.3",
     "axios": "^1.5.1",
@@ -27,6 +28,7 @@
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
+    "@gradio/client": "^0.8.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
