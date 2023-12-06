@@ -8,13 +8,13 @@ import { Link } from 'react-router-dom';
 
 function Home() {
     return (
-        <Box style={{ height: '100vh', width: '100vw', background: '#282c34', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0', margin: '0' }}>
+        <Box style={{ minHeight: '100vh', height: "fit-content", width: '100vw', background: '#282c34', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0', paddingBottom: "50px", margin: '0' }}>
             <Typography variant="h2" gutterBottom style={{ color: '#8A2BE2', fontWeight: 'bold' }}>
-                VoiceApp: La Rivoluzione Vocale
+                VoiceApp
             </Typography>
 
             <Typography variant="h6" style={{ color: 'white', maxWidth: '70%', textAlign: 'center', marginBottom: '30px' }}>
-                Con VoiceApp, dare vita alle tue creazioni vocali non è mai stato così semplice. Crea, personalizza e modifica le tue voci in un ambiente intuitivo. Esplora una vasta gamma di stili, registra e modifica al volo.
+                Registra una clip vocale e convertila rapidamente nella voce del tuo artista preferito. Carica le tue clip su Google Drive e fornisci il link della cartella contenente le registrazioni originali, insieme al link della cartella dove desideri ricevere i file convertiti. Personalizza le impostazioni per l'output a tuo piacimento e in pochi istanti otterrai le tue registrazioni trasformate.
             </Typography>
 
             <Grid container spacing={5} alignItems="center" justifyContent="center" style={{ marginTop: '20px' }}>
@@ -24,7 +24,7 @@ function Home() {
                             <HomeIcon fontSize="large" />
                         </IconButton>
                         <Typography style={{ color: 'white', marginTop: '10px' }}>
-                            Una piattaforma pensata per te.
+                            Registra la clip
                         </Typography>
                     </Box>
                 </Grid>
@@ -34,7 +34,7 @@ function Home() {
                             <MicIcon fontSize="large" />
                         </IconButton>
                         <Typography style={{ color: 'white', marginTop: '10px' }}>
-                            Registra e modifica con facilità.
+                            Imposta la voce e le sue tonalità
                         </Typography>
                     </Box>
                 </Grid>
@@ -44,7 +44,7 @@ function Home() {
                             <StyleIcon fontSize="large" />
                         </IconButton>
                         <Typography style={{ color: 'white', marginTop: '10px' }}>
-                            Personalizza ogni dettaglio.
+                            Convertila nella voce del tuo artista
                         </Typography>
                     </Box>
                 </Grid>

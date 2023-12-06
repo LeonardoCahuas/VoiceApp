@@ -93,7 +93,7 @@ function VoiceManagement() {
 
    console.log(data)
     // Modifica l'URL e l'endpoint API in base alle tue necessità
-   /*  const API_ENDPOINT = 'http://localhost:7865/vc_multi';
+    const API_ENDPOINT = 'http://ec2-15-160-94-154.eu-south-1.compute.amazonaws.com:7865/vc_multi';
 
     try {
       const response = await axios.post(API_ENDPOINT, data, {
@@ -103,12 +103,12 @@ function VoiceManagement() {
         }
       });
 
-      console.log('Risposta del server:', response.data);
+      console.log('Risposta del server:', response);
       // Gestisci qui la risposta del server
     } catch (error) {
       console.error('Errore nella richiesta API:', error);
       // Gestisci qui gli errori della richiesta
-    } */
+    } 
   };
 
   
